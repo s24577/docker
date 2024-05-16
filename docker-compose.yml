@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nginx
+    networks:
+      - frontend_network
+    depends_on:
+      - backend
+
+  backend:
+    image: node:latest
+    command: node server.js
+    networks:
+      - frontend_network
+      - backend_network
+    depends_on:
+      - database
+    environment:
+      DB_HOST: database
+
+  database:
+    image: postgres:13
+    networks:
+      - backend_network
+    environment:
+      POSTGRES_PASSWORD: testpsswd
+
+networks:
+  frontend_network:
+    driver: bridge
+  backend_network:
+    driver: bridge
